@@ -30,7 +30,7 @@ class xgb_model:
 
 #    test = pd.read_pickle('test_seringe.pkl')
    
-        self.xgtrain = xgb.DMatrix(X, label=y)
+        self.xgtrain = xgb.DMatrix(train, label=y_train)
 
     
       
@@ -181,29 +181,29 @@ class xgb_model:
         return(rmse)
 
 
-def rmsle_cv(model,train,y_train,n_folds):
-    kf = KFold(n_folds, shuffle=True, random_state=42).get_n_splits(train.values)
+def rmsle_cv(model,train,y_train,n_folds,random_state):
+    kf = KFold(n_folds, shuffle=True, random_state=random_state).get_n_splits(train.values)
     rmse= np.sqrt(-cross_val_score(model, train.values, y_train, scoring="neg_mean_squared_error", cv = kf))
     return(rmse)
 
 
-if __name__ == '__main__':
-    
-    
-    X = pd.read_pickle('train_seringe.pkl')
-
-#    test = pd.read_pickle('test_seringe.pkl')
-    y=pd.read_pickle('y_seringe.pkl')
-
-
-   
-    model=xgb_model(X,y,random_state=11,num_rounds=3000,num_iter=10,eta=0.05,init_points=5)
-    model.best_RMSE
-    mxgb=model.GetModel()
-    score2=model.TrainModel()
-    
-    score = rmsle_cv(mxgb,X,y,5)
-    print("Xgboost score: {:.4f} ({:.4f})\n".format(score.mean(), score.std()))
+#if __name__ == '__main__':
+#    
+#    
+#    X = pd.read_pickle('train_seringe.pkl')
+#
+##    test = pd.read_pickle('test_seringe.pkl')
+#    y=pd.read_pickle('y_seringe.pkl')
+#
+#
+#   
+#    model=xgb_model(X,y,random_state=11,num_rounds=3000,num_iter=10,eta=0.05,init_points=5)
+#    model.best_RMSE
+#    mxgb=model.GetModel()
+#    score2=model.TrainModel()
+#    
+#    score = rmsle_cv(mxgb,X,y,5)
+#    print("Xgboost score: {:.4f} ({:.4f})\n".format(score.mean(), score.std()))
 
 
 
